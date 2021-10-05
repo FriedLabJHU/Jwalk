@@ -1,68 +1,90 @@
-     
-#     Jwalk - A tool to calculate the solvent accessible surface distance (SASD) between crosslinked residues.
-     
-     Copyright 2016 Jwalk Inventor and Birkbeck College University of London.
-                          The Jwalk Inventor is: Josh Bullock
- 
- 
-     Jwalk is available under Public Licence.
-     This software is made available under GPL V3
+# Jwalk
 
-     Please cite your use of Jwalk in published work:
-     
-     J.Bullock, J. Schwab, K. Thalassinos, M. Topf (2016)
-     The importance of non-accessible crosslinks and solvent accessible surface distance
-     in modelling proteins with restraints from crosslinking mass spectrometry. 
-     Molecular and Cellular Proteomics (15) pp.2491–2500
+A tool to calculate the **S**olvent **A**ccessible **S**urface **D**istances (**SASD**) between crosslinked residues  
+  
+This version of Jwalk is simply a modernization of the original invented by the [Topf Lab](https://github.com/Topf-Lab/Jwalk)  
+All functionality is original and compatibility has been upgraded for Python 3  
+Jwalk works on Linux / MacOS
 
+## Dependencies
+The following can be installed with ```pip```
 
-INSTALLATION:
-Open a terminal session and a move to the directory Jwalk is in.
+|          |Package            |
+| -------- | ----------------- |
+| Required | ```BioPython```   |
+| Required | ```numpy```       |
+| Required | ```collections``` |
+| Optional | ```freesasa```    |
 
-type "setup.py install"
+## Installation
 
-RUNNING JWALK:
+```
+  # Move to cloned directory
+  cd Jwalk
 
-Jwalk currently only runs on Unix or Linux based operating systems (sorry !)
+  # Run install script
+  python setup.py install
+```
 
-type "jwalk" plus any of the below flags:
+## Running Jwalk
+``` $ jwalk ```
+* Given no arguments, Jwalk will find all SASD between all Lysines in all PDBs in the working directory *
 
-  -h, --help        show this help message and exit
-  -lys              calculate lysine crosslinks (default)
-  -xl_list XL_LIST  calculate crosslinks from input list (see Examples)
-  -i I              specify input pdb: -i <inputfile.pdb>   (default runs on every .pdb in directory)
-  -aa1 AA1          specify starting amino-acid via three letter code eg. HIS
-  -aa2 AA2          specify starting amino-acid via three letter code eg. TYR
-  -surface          use higher accuracy method to calculate solvent accessibility - slower
+## Running Options
+```
+    -h, --help        show this help message and exit
+    -lys LYS          calculate lysine crosslinks (default)
+    -xl_list XL_LIST  calculate crosslinks from input list (see Examples)
+    -i I              specify input pdb: -i [inputfile.pdb]   (default runs on every .pdb in directory)
+    -aa1 AA1          specify starting amino-acid via three letter code eg. HIS
+    -aa2 AA2          specify starting amino-acid via three letter code eg. TYR
+    -surface SURFACE  use higher accuracy method to calculate solvent accessibility - slower
+```
 
-if no flags are added, Jwalk will calculate the SASDs between all lysine residues on
-every .pdb file in the directory.
+## Input \& Output
+Crosslink lists in the ```-xl_list``` input should be pipe delmited:  
+```res_num_1|chain_1|res_num_2|chain_2|```
 
-CROSSLINK LIST INPUT:
+Example of 5 crosslinks between 2 chains:
+```
+54|A|21|B|
+13|A|54|A|
+2|B|13|B|
+17|B|12|A|
+```
 
-Crosslinks should be listed in a pipe-delimited .txt file as so:
+If your PDB file does not contain chain identifiers, use \"x\" as the chain"
+```
+14|x|63|x|
+```
 
-res1|chain1|res2|chain2|
+Jwalk will create a results directory and place the outputs as follows:
+```
+./Jwalk_results
+ ⎿ inputfile_crosslink_list.txt
+ ⎿ inputfile_crosslinks.pdb
+```
 
-eg. 34|A|56|B|
+## Visualization
+In order to visualize the crosslinks in Chimera select ```Actions > Atoms/Bonds > show```
 
-If your pdb file has no chain, insert a lowercase x
+## Citation
 
-eg. 34|x|56|x|
+[DOI](https://doi.org/10.1074/mcp.M116.058560)
+> 
+    J.Bullock, J. Schwab, K. Thalassinos, M. Topf (2016)
+        The importance of non-accessible crosslinks and solvent accessible surface distance
+        in modelling proteins with restraints from crosslinking mass spectrometry. 
+        Molecular and Cellular Proteomics (15) pp.2491–2500
 
-See the example file for a sample list.
+## Funding
 
-OUTPUT:
+* BBSRC London Interdisciplinary Doctoral Programme (Joshua Bullock)
+* MRC MR/M019292/1 (Maya Topf)
 
-Two output files are generated in ./Jwalk_results/ 
+## License
 
-<pdb>_crosslink_list.txt
-
-<pdb>_crosslinks.pdb
-
-In order to visualize the crosslinks in Chimera select Actions>Atoms/Bonds>show
-Better representation in chimera in progress ...
-
-Please try the test in JWalk/Examples/
-
-Happy crosslinking !
+[GPL-V3](https://choosealicense.com/licenses/gpl-3.0/)
+> 
+    Copyright 2016 - Birkbeck College University of London
+    The Jwalk inventor is: Josh Bullock

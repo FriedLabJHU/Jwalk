@@ -21,11 +21,8 @@
 # ===============================================================================
 
 from Jwalk import PDBTools, GridTools, SurfaceTools, SASDTools
-import math
-import os
-import sys
-import argparse
 from multiprocessing import cpu_count
+import os, sys, argparse
 
 # default parameters  
   
@@ -95,10 +92,10 @@ elif args.aa1:
         aa2 = args.aa2[0].upper()
         # catch any dodgy typing
         if aa1 not in amino_acids or aa2 not in amino_acids:
-            print "ERROR: Please type amino acid in three letter code format"
+            print("ERROR: Please type amino acid in three letter code format")
             sys.exit(2)
     else:
-        print "Please specify both aa1 AND aa2 if you want to use this option"
+        print("Please specify both aa1 AND aa2 if you want to use this option")
         sys.exit(2)
 
 if args.max_dist:
@@ -135,7 +132,7 @@ def runJwalk(max_dist, vox, surface, xl_list, aa1, aa2, ncpus, pdb_list):
     """
     for pdb in pdb_list:
     
-        print "calculating crosslinks on", pdb
+        print("calculating crosslinks on {} ".format(pdb))
         # load pdb into Jwalk
         structure_instance = PDBTools.read_PDB_file(pdb)
         # generate grid of voxel size (vox) that encapsulates pdb
@@ -174,7 +171,7 @@ def runJwalk(max_dist, vox, surface, xl_list, aa1, aa2, ncpus, pdb_list):
         # output sasds to .pdb file and .txt file
         PDBTools.write_sasd_to_txt(sasds, pdb)
         PDBTools.write_sasd_to_pdb(dens_map, sasds, pdb)
-        print len(sasds), "SASDs calculated"
+        print("{} SASDs calculated".format(len(sasds)))
             
 if __name__ == "__main__":
     runJwalk(max_dist, vox, surface, xl_list, aa1, aa2, ncpus, pdb_list)
