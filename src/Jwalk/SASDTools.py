@@ -370,7 +370,7 @@ def parallel_BFS(aa1_voxels, aa2_voxels, dens_map, aa1_CA, aa2_CA, crosslink_pai
         if ncpus > 1:
             pool = Pool(ncpus)
             xl_dictionaries = pool.map(calculate_specific_SASD_star,
-                                       itertools.izip(crosslink_pairs,
+                                       zip(crosslink_pairs,
                                        itertools.repeat(aa1_voxels),
                                        itertools.repeat(aa2_voxels),
                                        itertools.repeat(dens_map),
@@ -395,7 +395,7 @@ def parallel_BFS(aa1_voxels, aa2_voxels, dens_map, aa1_CA, aa2_CA, crosslink_pai
             
             pool = Pool(ncpus)
             xl_dictionaries = pool.map(calculate_SASDs_star, 
-                                       itertools.izip(aa1_voxels,
+                                       zip(aa1_voxels,
                                        itertools.repeat(aa1_voxels),
                                        itertools.repeat(aa2_voxels),
                                        itertools.repeat(dens_map),
