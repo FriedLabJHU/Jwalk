@@ -31,7 +31,7 @@ Future release of FriedLabJHU/Jwalk will have freesasa as an integrated Python 3
 ```
 
 ## Running Jwalk
-``` $ jwalk ```  
+``` $ jwalk -i 1LMB.pdb -xl_list DSBU_crosslinks.txt```  
 **Given no arguments, Jwalk will find all SASD between all Lysines in all PDBs in the working directory**
 
 ## Running Options
