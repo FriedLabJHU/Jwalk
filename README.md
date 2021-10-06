@@ -1,4 +1,4 @@
-# Jwalk
+# Jwalk (Python 3)
 
 A tool to calculate the **S**olvent **A**ccessible **S**urface **D**istances (**SASD**) between crosslinked residues  
   
