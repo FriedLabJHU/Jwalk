@@ -31,8 +31,8 @@ Future release of FriedLabJHU/Jwalk will have freesasa as an integrated Python 3
 ```
 
 ## Running Jwalk
-``` $ jwalk ```
-** Given no arguments, Jwalk will find all SASD between all Lysines in all PDBs in the working directory **
+``` $ jwalk ```  
+**Given no arguments, Jwalk will find all SASD between all Lysines in all PDBs in the working directory**
 
 ## Running Options
 ```
