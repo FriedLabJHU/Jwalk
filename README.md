@@ -14,7 +14,11 @@ The following can be installed with ```pip```
 | Required | ```BioPython```   |
 | Required | ```numpy```       |
 | Required | ```collections``` |
-| Optional | ```freesasa```    |
+
+#### Optional (Temporary)
+Install the ```freesasa``` command line tool [here](http://freesasa.github.io/)  
+This tool will enable higher resolution SASD calculations  
+Future release of FriedLabJHU/Jwalk will have freesasa as an integrated Python 3 module  
 
 ## Installation
 

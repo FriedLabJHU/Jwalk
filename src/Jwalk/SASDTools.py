@@ -435,8 +435,8 @@ def get_euclidean_distances(sasds, pdb, aa1, aa2):
                 float(line[38:46].strip()),
                 float(line[46:54].strip())]
     
-    for k,v in residues.iteritems():
-        for k1,v1 in residues.iteritems():
+    for k,v in residues.items():
+        for k1,v1 in residues.items():
             if k1 != k:
             
                 euc_dists[int(k[0]),k[1], int(k1[0]),k1[1]] = calculate_distance([v,v1])

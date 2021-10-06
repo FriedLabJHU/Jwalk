@@ -237,9 +237,9 @@ def check_solvent_accessibility_freesasa(prot,aa1_CA,freesasa_source = "freesasa
                 "TYR":"tyrosines"
                 }
     
-    cmd = [freesasa_source,"--format=rsa","--output=%s.rsa" % prot[:-4],"--radii=naccess",prot]
+    cmd = [freesasa_source,"--format=rsa","--output={}.rsa".format(prot[:-4]),"--radii=naccess",prot]
     
-    ext_freesasa = subprocess.Popen(cmd)
+    ext_freesasa = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
     ext_freesasa.communicate()
     
     try:
