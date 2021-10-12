@@ -1,12 +1,10 @@
-#===============================================================================
-#     This file is part of Jwalk.
+# ===============================================================================
+#     This file is part of Jwalk (Python 3).
 #     
 #     Jwalk - A tool to calculate the solvent accessible surface distance (SASD) 
 #     between crosslinked residues.
 #     
-#     Copyright 2016 Jwalk Inventor and Birkbeck College University of London.
-#                          The Jwalk Inventor is: Josh Bullock
-# 
+#     Copyright 2016 Josh Bullock and Birkbeck College University of London.
 # 
 #     Jwalk is available under Public Licence.
 #     This software is made available under GPL V3
@@ -18,11 +16,12 @@
 #     in modelling proteins with restraints from crosslinking mass spectrometry. 
 #     Molecular and Cellular Proteomics (15) pp.2491-2500
 #
-#===============================================================================
+# ===============================================================================
 
+import os, pathlib
+from string import ascii_uppercase
 from numpy import array, append
 from Bio.PDB import PDBParser as PDBParserBiopy
-import os
 
 class Vector:
     """A class representing Cartesian 3-dimensonal vectors."""
@@ -47,12 +46,11 @@ class Vector:
         Return:
             Atom instance
         """
-        template = 'ATOM      1  C   NOR A   1      23.161  39.732 -25.038  1.00 10.00             C'
-        a = BioPyAtom([])
-        a.x = self.x
-        a.y = self.y
-        a.z = self.z
-        return a
+        atom = BioPyAtom([])
+        atom.x = self.x
+        atom.y = self.y
+        atom.z = self.z
+        return atom
 
 class BioPy_Structure:
     
@@ -91,111 +89,13 @@ class BioPy_Structure:
 
     def __repr__(self):
         if not self.filename == 'Unknown':
-            s =  'Filename: ' + self.filename + '\n'
+            repr_str =  'Filename: ' + self.filename + '\n'
         else: 
-            s = ''
-        s += 'No Of Atoms: ' + str(len(self))  + '\n'
-        s += 'First Atom: ' + str(self.atomList[0]) + '\n'
-        s += 'Last Atom: ' + str(self.atomList[-1]) + '\n'
-        return s
-
-    def write_to_PDB(self, filename):
-        """
-        
-        Write Structure instance to PDB file.
-        
-        Arguments:
-        
-            *filename*
-                output filename.
-            
-        """
-        if filename[-4:] == '.pdb':
-            g = open(filename, 'w')
-        else:
-            g = open(filename+'.pdb', 'w')
-        header='''EXPDTA    MODEL GENERATE WITH TEMPY
-REMARK    MODEL GENERATE WITH TEMPY
-'''
-        g.write(header)
-        for x in self.atomList:
-            g.write(x.write_to_PDB())
-            if x.isTerm:
-                line = x._writeTerm()+'\n'
-                g.write(line)
-        g.write(self.footer)
-        g.close()
-
-    def write_to_PDB2(self, filename,hetatom=False):
-        """
-        
-        Write Structure instance to PDB file.
-        
-        Arguments:
-        
-            *filename*
-                output filename.
-            
-        """
-        if filename[-4:] == '.pdb':
-            g = open(filename, 'w')
-        else:
-            g = open(filename+'.pdb', 'w')
-        header='''EXPDTA    MODEL GENERATE WITH TEMPY
-REMARK    MODEL GENERATE WITH TEMPY
-'''
-        g.write(header)
-        structList=self.split_into_chains()
-        hetatmlist=[]
-        chainlisttot=[]
-        last_prot_num=0
-        for chain in range(len(structList)):
-            chainlist=[]
-            for x in structList[chain].atomList:
-                if x.record_name=="HETATM":
-                    #hetatmlist.append(x.write_to_PDB())
-                    hetatmlist.append(x.copy())
-                else:
-                    chainlist.append(x.copy())
-            chainlisttot.append(BioPy_Structure(chainlist))
-        for strchain in range(len(chainlisttot)):
-            if strchain==0:
-                chainlisttot[strchain].renumber_atoms()
-            else:
-                start_num=chainlisttot[strchain-1].atomList[-1].serial
-                #+2 there is ter 
-                chainlisttot[strchain].renumber_atoms(start_num=start_num+2)
-            for x in chainlisttot[strchain].atomList:
-                g.write(x.write_to_PDB())
-                last_prot_num+=1
-            line = chainlisttot[strchain].atomList[-1]._writeTerm()+'\n'
-            g.write(line)
-            #last_prot_num+=1
-
-        print(last_prot_num)
-        if hetatom==True:
-            hetstr=BioPy_Structure(hetatmlist)
-            hetchain=hetstr.split_into_chains()
-            for chain in range(len(hetchain)):
-                if chain==0:
-                #hetchain[chain].renumber_atoms()
-                    print(last_prot_num)
-                    hetchain[chain].renumber_atoms(start_num=last_prot_num+2)
-
-                else:
-                    start_num=hetchain[chain-1].atomList[-1].serial
-                #+2 there is ter 
-                    hetchain[chain].renumber_atoms(start_num=start_num+2)
-
-                for xhet in hetchain[chain].atomList:
-                    g.write(xhet.write_to_PDB())
-                line = hetchain[chain].atomList[-1]._writeTerm()+'\n'
-                g.write(line)
-        lineend = ''
-        lineend += 'ENDMDL'.ljust(6)+'\n'
-        g.write(lineend)
-        g.write(self.footer)
-        g.close()
+            repr_str = ''
+        repr_str += 'No Of Atoms: ' + str(len(self))  + '\n'
+        repr_str += 'First Atom: ' + str(self.atomList[0]) + '\n'
+        repr_str += 'Last Atom: ' + str(self.atomList[-1]) + '\n'
+        return repr_str
 
     def copy(self):
         """
@@ -473,10 +373,10 @@ class BioPyAtom:
         return line + '\n'
 
 def read_PDB_file(filename,hetatm=False,water=False):
-        
+        struct_file = open(filename, "r")
         # hydrogens are omitted.
         p=PDBParserBiopy(QUIET=True)#permissive default True
-        structure=p.get_structure("id", filename)
+        structure=p.get_structure("id", struct_file)
         
         atomList = []
         hetatomList=[]
@@ -507,12 +407,12 @@ def read_PDB_file(filename,hetatm=False,water=False):
         
         return BioPy_Structure(atomList, filename, header, footer)
         
-def write_sasd_to_txt(sasds,pdb):
-	
-	"""
-	
-	Outputs sasds to .txt file
-	
+def write_sasd_to_txt(sasds,pdb,result_dir):
+    
+    """
+    
+    Outputs sasds to .txt file
+    
     Arguments:
     
        *sasds*
@@ -520,33 +420,37 @@ def write_sasd_to_txt(sasds,pdb):
        *pdb*
            .pdb file sasds were calculated on
     """ 
-	
-	if not os.path.exists('./Jwalk_results'):
-		os.makedirs('./Jwalk_results')
-		
-	with open('./Jwalk_results/%s_crosslink_list.txt' % pdb[:-4],'w') as outf:
-		
-		outf.write(' '.join('{0:<13}'.format(col) for col in ['Index','Model','Atom1','Atom2','SASD','Euclidean Distance']))
-		outf.write('\n')
-		index = 1
-		
-		for xl in sasds:
-			(aa1,chain1,res1)=xl[0]
-			(aa2,chain2,res2)=xl[1]
-			atom1 = ('%s-%d-%s-CA' % (res1,aa1,chain1) )
-			atom2 = ('%s-%d-%s-CA' % (res2,aa2,chain2) )
-			sasd=xl[2]
-			ed=xl[3]
-			outf.write(' '.join('{0:<13}'.format(col) for col in [index,pdb,atom1,atom2,sasd,ed]))
-			outf.write('\n')
-			index +=1
+
+    jwalk_pure_path = pathlib.PurePath(result_dir, 'Jwalk_results')
+    jwalk_path = pathlib.Path(jwalk_pure_path)
+    if not jwalk_path.exists():
+        os.mkdir(jwalk_path)
+    
+    write_pure_path = pathlib.PurePath(jwalk_pure_path,'{}_crosslink_list.txt'.format(pdb.stem))
+    write_path = pathlib.Path(write_pure_path)
+    with open(write_path,'w') as outf:
         
-def write_sasd_to_pdb(dens_map,sasds,pdb):
-	
-	"""
-	
-	Outputs sasds to .pdb file
-	
+        outf.write(' '.join('{0:<13}'.format(col) for col in ['Index','Model','Atom1','Atom2','SASD','Euclidean Distance']))
+        outf.write('\n')
+        index = 1
+        
+        for xl in sasds:
+            (aa1,chain1,res1)=xl[0]
+            (aa2,chain2,res2)=xl[1]
+            atom1 = ('%s-%d-%s-CA' % (res1,aa1,chain1) )
+            atom2 = ('%s-%d-%s-CA' % (res2,aa2,chain2) )
+            sasd=xl[2]
+            ed=xl[3]
+            outf.write(' '.join('{0:<13}'.format(col) for col in [index,pdb.stem,atom1,atom2,sasd,ed]))
+            outf.write('\n')
+            index +=1
+        
+def write_sasd_to_pdb(dens_map,sasds,pdb,result_dir):
+    
+    """
+    
+    Outputs sasds to .pdb file
+    
     Arguments:
        
        *dens_map*
@@ -556,52 +460,71 @@ def write_sasd_to_pdb(dens_map,sasds,pdb):
        *pdb*
            .pdb file sasds were calculated on
     """ 
-	
-	if not os.path.exists('./Jwalk_results'):
-		os.makedirs('./Jwalk_results')
-	
-	apix = dens_map.apix
-	origin = dens_map.origin
-	path_coord = {}
-	
-	for xl in sasds:
-		a = []
-		for (x,y,z) in sasds[xl]:
-			a.append([(x*apix)+origin[0], (y*apix)+origin[1], (z*apix)+origin[2]])
-		
-		path_coord[xl] = a
-		
-	with open('./Jwalk_results/%s_crosslinks.pdb' % pdb[:-4],'w') as pdb:
-		
-		m_count = 1
-		for xl in path_coord:
-			(aa1,chain1,res1)=xl[0]
-			(aa2,chain2,res2)=xl[1]
-			sasd=xl[2]
-			count = 1
-			pdb.write('MODEL %d %s%d%s-%s%d%s\n' % (m_count,res1,aa1,chain1,res2,aa2,chain2))
-			m_count = m_count+1
-			for (x,y,z) in path_coord[xl]:
-				p=Vector(x,y,z)
-				a=p.to_atom()
-				a.record_name = 'ATOM'
-				a.serial = count
-				a.atom_name = 'C'
-				a.alt_loc = ''
-				a.res = 'GLY'
-				a.chain = 'A'
-				a.res_no = count
-				a.icode = ''
-				a.occ = 1
-				a.temp_fac = 0
-				a.elem = 'C'
-				a.charge = ''
-				#print a.__dict__
-				#atom = BioPyAtom(a)
-				pdb.write(a.write_to_PDB())
-				count +=1
-			pdb.write('END\n') 
+    jwalk_pure_path = pathlib.PurePath(result_dir, 'Jwalk_results')
+    jwalk_path = pathlib.Path(jwalk_pure_path)
+    if not jwalk_path.exists():
+        os.mkdir(jwalk_path)
+    
+    apix = dens_map.apix
+    origin = dens_map.origin
+    path_coord = {}
+    
+    for xl in sasds:
+        a = []
+        for (x,y,z) in sasds[xl]:
+            a.append([(x*apix)+origin[0], (y*apix)+origin[1], (z*apix)+origin[2]])
         
+        path_coord[xl] = a
 
+    write_pure_path = pathlib.PurePath(jwalk_path,'{}_crosslinks.pdb'.format(pdb.stem))
+    write_path = pathlib.Path(write_pure_path)
+    with open(write_path,'w') as pdb:
+        # little trick to uniquely id all crosslinks with unique flase ATOM (X[A-Z]) / CHAIN ([A-Z]) name pairs 
+        atom_cnt = 0
+        chain_cnt = 0
+        model_cnt = 1
+        for xl in path_coord:
+            (aa1,chain1,res1)=xl[0]
+            (aa2,chain2,res2)=xl[1]
 
-   
+            atom_count_per_model = 1
+            pdb.write('# MODEL {:d} {:s}{:d}{:s}-{:s}{:d}{:s}\n'.format(model_cnt,res1,aa1,chain1,res2,aa2,chain2))
+            model_cnt += 1
+
+            for (x,y,z) in path_coord[xl]:
+
+                if atom_cnt > 25:
+                    chain_cnt += 1
+                    atom_cnt = 0
+                
+                atom_tmp = ascii_uppercase[atom_cnt]+'X'
+                chain_tmp = ascii_uppercase[chain_cnt]
+
+                p=Vector(x,y,z)
+                a=p.to_atom()
+                a.record_name = 'ATOM'
+                a.serial = atom_count_per_model
+                a.atom_name = atom_tmp
+                a.alt_loc = ''
+                a.res = chain_tmp+atom_tmp
+                a.chain = chain_tmp
+                a.res_no = atom_count_per_model
+                a.icode = ''
+                a.occ = 1
+                a.temp_fac = 0
+                a.elem = 'X'
+                a.charge = ''
+                #print a.__dict__
+                #atom = BioPyAtom(a)
+                pdb.write(a.write_to_PDB())
+
+                atom_count_per_model += 1
+            atom_cnt += 1
+
+            # accounting for the extra count+=1 in the previous for loop
+            atom_count_per_model -= 1
+            # added for better visualization in pymol
+            for i in range(1,atom_count_per_model):
+                pdb.write('CONECT {:4d} {:4d}\n'.format(i,i+1))
+            pdb.write('END\n')
+            

@@ -33,8 +33,6 @@ if sys.version_info[:2] < (3, 5):
     print("Please upgrade your version of Python.")
     sys.exit(-1)
 
-
-
 setup(
     name = "Jwalk",
     version = "2.0.0",
@@ -42,13 +40,14 @@ setup(
     author_email = "j.bullock@cryst.bbk.ac.uk",
     maintainer = "Edgar Manriquez-Sandoval",
     maintainer_email = "emanriq1@jhu.edu",
+    url="https://github.com/FriedLabJHU/Jwalk",
     description = ("A tool to calculate SASDs between crosslinked residues "),
     packages=['Jwalk'],
     package_dir = {'':'src'},
     requires=['NumPy (>=1.6)',
         "Biopython (>= 1.5)",
     ],
+    package_data={'': ['naccess.config.txt']},
     scripts=['src/Jwalk/jwalk'],
-
 )
 

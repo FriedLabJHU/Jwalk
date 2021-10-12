@@ -4,21 +4,16 @@ A tool to calculate the **S**olvent **A**ccessible **S**urface **D**istances (**
   
 This version of Jwalk is simply a modernization of the original invented by the [Topf Lab](https://github.com/Topf-Lab/Jwalk)  
 All functionality is original and compatibility has been upgraded for Python 3  
-Jwalk works on Linux / MacOS
+Jwalk works on Linux / MacOS / Windows
 
 ## Dependencies
 The following can be installed with ```pip```
 
-|          |Package            |
+|          | Package           |
 | -------- | ----------------- |
 | Required | ```BioPython```   |
 | Required | ```numpy```       |
-| Required | ```collections``` |
-
-#### Optional (Temporary)
-Install the ```freesasa``` command line tool [here](http://freesasa.github.io/)  
-This tool will enable higher resolution SASD calculations  
-Future release of FriedLabJHU/Jwalk will have freesasa as an integrated Python 3 module  
+| Required | ```freesasa```    |
 
 ## Installation
 
@@ -31,18 +26,23 @@ Future release of FriedLabJHU/Jwalk will have freesasa as an integrated Python 3
 ```
 
 ## Running Jwalk
-``` $ jwalk -i 1LMB.pdb -xl_list DSBU_crosslinks.txt```  
-**Given no arguments, Jwalk will find all SASD between all Lysines in all PDBs in the working directory**
+``` $ jwalk -f 1FGA.pdb```
+**Given no optional arguments, Jwalk will find all SASD between all Lys-to-Lys crosslinks in the provided PDB**
 
 ## Running Options
 ```
-    -h, --help        show this help message and exit
-    -lys LYS          calculate lysine crosslinks (default)
-    -xl_list XL_LIST  calculate crosslinks from input list (see Examples)
-    -i I              specify input pdb: -i [inputfile.pdb]   (default runs on every .pdb in directory)
-    -aa1 AA1          specify starting amino-acid via three letter code eg. HIS
-    -aa2 AA2          specify starting amino-acid via three letter code eg. TYR
-    -surface SURFACE  use higher accuracy method to calculate solvent accessibility - slower
+    -h, --help            show this help message and exit
+    -f F                  Input path to .pdb file
+    -o O                  Output path for Jwalk results (default: Out to "./Jwalk_results" in the current working
+                            directory)
+    -xl_list XL_LIST      OPTIONAL: Input path to crosslink list (default: Finds all Lys-to-Lys crosslinks)
+    -xl_dist_cutoff XL_DIST_CUTOFF
+                            OPTIONAL: Specify maximum crosslink distance cutoff in Angstroms (default: Keeps all
+                            distances)
+    -aa1 AA1              OPTIONAL: Specify inital crosslink amino acid three letter code (default: LYS)
+    -aa2 AA2              OPTIONAL: Specify ending crosslink amino acid three letter code (default: LYS)
+    -vox VOX              OPTIONAL: Specify voxel resolution to use in Angstrom (default: 1 Angstrom)
+    -ncpus NCPUS          OPTIONAL: Specify number of cpus to use (default: cpu_count())
 ```
 
 ## Input \& Output
@@ -70,7 +70,9 @@ Jwalk will create a results directory and place the outputs as follows:
 ```
 
 ## Visualization
-In order to visualize the crosslinks in Chimera select ```Actions > Atoms/Bonds > show```
+To visualize the crosslinks PDB ...  
+In PYMOL, open the crosslinks.pdb file and ```set valence, 0``` along with ```show sticks, all``` and ```hide spheres, all```  
+In Chimera, uncomment all the MODEL lines in the PDB then open the crosslinks.pdb file and select ```Actions > Atoms/Bonds > show```  
 
 ## Citation
 
@@ -90,5 +92,4 @@ In order to visualize the crosslinks in Chimera select ```Actions > Atoms/Bonds 
 
 [GPL-V3](https://choosealicense.com/licenses/gpl-3.0/)
 > 
-    Copyright 2016 - Birkbeck College University of London
-    The Jwalk inventor is: Josh Bullock
+    Copyright 2016 - Josh Bullock & Birkbeck College University of London

@@ -1,12 +1,10 @@
-#===============================================================================
-#     This file is part of Jwalk.
+# ===============================================================================
+#     This file is part of Jwalk (Python 3).
 #     
 #     Jwalk - A tool to calculate the solvent accessible surface distance (SASD) 
 #     between crosslinked residues.
 #     
-#     Copyright 2016 Jwalk Inventor and Birkbeck College University of London.
-#                          The Jwalk Inventor is: Josh Bullock
-# 
+#     Copyright 2016 Josh Bullock and Birkbeck College University of London.
 # 
 #     Jwalk is available under Public Licence.
 #     This software is made available under GPL V3
@@ -18,4 +16,4 @@
 #     in modelling proteins with restraints from crosslinking mass spectrometry. 
 #     Molecular and Cellular Proteomics (15) pp.2491-2500
 #
-#===============================================================================
+# ===============================================================================

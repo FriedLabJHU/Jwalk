@@ -1,12 +1,10 @@
-#===============================================================================
-#     This file is part of Jwalk.
+# ===============================================================================
+#     This file is part of Jwalk (Python 3).
 #     
 #     Jwalk - A tool to calculate the solvent accessible surface distance (SASD) 
 #     between crosslinked residues.
 #     
-#     Copyright 2016 Jwalk Inventor and Birkbeck College University of London.
-#                          The Jwalk Inventor is: Josh Bullock
-# 
+#     Copyright 2016 Josh Bullock and Birkbeck College University of London.
 # 
 #     Jwalk is available under Public Licence.
 #     This software is made available under GPL V3
@@ -18,13 +16,11 @@
 #     in modelling proteins with restraints from crosslinking mass spectrometry. 
 #     Molecular and Cellular Proteomics (15) pp.2491-2500
 #
-#===============================================================================
+# ===============================================================================
 
-from multiprocessing import Pool, Process, freeze_support
-import itertools
-import sys
 import math
-import os
+import itertools
+from multiprocessing import Pool, freeze_support
 
 def calculate_specific_SASD(single_crosslink, aa1_voxels, aa2_voxels, dens_map, aa1_CA, aa2_CA,
                             max_dist, vox):
@@ -67,16 +63,20 @@ def calculate_specific_SASD(single_crosslink, aa1_voxels, aa2_voxels, dens_map, 
 
     specific_xl = {}
 
-    comb = [[-1, -1, -1],[-1, -1, +0],[-1, -1, +1],
-            [-1, +0, -1],[-1, +0, +0],[-1, +0, +1],
-            [-1, +1, -1],[-1, +1, +0],[-1, +1, +1],
-            [+0, -1, -1],[+0, -1, +0],[+0, -1, +1],
-            [+0, +0, -1],[+0, +0, +0],[+0, +0, +1],
-            [+0, +1, -1],[+0, +1, +0],[+0, +1, +1],
-            [+1, -1, -1],[+1, -1, +0],[+1, -1, +1],
-            [+1, +0, -1],[+1, +0, +0],[+1, +0, +1],
-            [+1, +1, -1],[+1, +1, +0],[+1, +1, +1]]
-
+    comb = [[+1, +0, +0],[-1, +0, +0],
+            [+0, +1, +0],[+0, -1, +0],
+            [+0, +0, +1],[+0, +0, -1],
+            [+1, +0, +1],[-1, +0, +1],
+            [+0, +1, +1],[+0, -1, +1],
+            [+1, -1, +0],[-1, -1, +0],
+            [+1, +1, +0],[-1, +1, +0],
+            [+1, +0, -1],[-1, +0, -1],
+            [+0, +1, -1],[+0, -1, -1],
+            [+1, +1, +1],[+1, -1, +1],
+            [-1, +1, +1],[-1, -1, +1],
+            [+1, +1, -1],[+1, -1, -1],
+            [-1, +1, -1],[-1, -1, -1]]
+            
     # distance of diagonal steps
     diag1 = (math.sqrt((vox ** 2) * 2)) # 2d diagonal
     diag2 = (math.sqrt((vox ** 2) * 3)) # 3d diagonal
@@ -198,32 +198,19 @@ def calculate_SASDs(start_residue, aa1_voxels, aa2_voxels, dens_map, aa1_CA, aa2
     sasds = {}
 
     # order of voxels to search - by having diagonals last ensures shortest path is returned
-    comb = [[1, 0, 0],
-            [-1, 0, 0],
-            [0, -1, 0],
-            [0, 1, 0],
-            [0, 0, -1],
-            [0, 0, 1],
-            [1, 0, 1],
-            [-1, 0, 1],
-            [0, 1, 1],
-            [0, -1, 1],
-            [1, -1, 0],
-            [-1, -1, 0],
-            [1, 1, 0],
-            [-1, 1, 0],
-            [1, 0, -1],
-            [-1, 0, -1],
-            [0, 1, -1],
-            [0, -1, -1],
-            [1, 1, 1],
-            [1, -1, 1],
-            [-1, 1, 1],
-            [-1, -1, 1],
-            [1, 1, -1],
-            [1, -1, -1],
-            [-1, 1, -1],
-            [-1, -1, -1]]
+    comb = [[+1, +0, +0],[-1, +0, +0],
+            [+0, +1, +0],[+0, -1, +0],
+            [+0, +0, +1],[+0, +0, -1],
+            [+1, +0, +1],[-1, +0, +1],
+            [+0, +1, +1],[+0, -1, +1],
+            [+1, -1, +0],[-1, -1, +0],
+            [+1, +1, +0],[-1, +1, +0],
+            [+1, +0, -1],[-1, +0, -1],
+            [+0, +1, -1],[+0, -1, -1],
+            [+1, +1, +1],[+1, -1, +1],
+            [-1, +1, +1],[-1, -1, +1],
+            [+1, +1, -1],[+1, -1, -1],
+            [-1, +1, -1],[-1, -1, -1]]
 
     # distance of diagonal steps
     diag1 = (math.sqrt((vox ** 2) * 2)) # 2d diagonal
@@ -366,7 +353,7 @@ def parallel_BFS(aa1_voxels, aa2_voxels, dens_map, aa1_CA, aa2_CA, crosslink_pai
     freeze_support()
     final_XL = {}
     
-    if xl_list:
+    if xl_list != "NULL":
         if ncpus > 1:
             pool = Pool(ncpus)
             xl_dictionaries = pool.map(calculate_specific_SASD_star,

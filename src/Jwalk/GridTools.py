@@ -1,12 +1,10 @@
-#===============================================================================
-#     This file is part of Jwalk.
+# ===============================================================================
+#     This file is part of Jwalk (Python 3).
 #     
 #     Jwalk - A tool to calculate the solvent accessible surface distance (SASD) 
 #     between crosslinked residues.
 #     
-#     Copyright 2016 Jwalk Inventor and Birkbeck College University of London.
-#                          The Jwalk Inventor is: Josh Bullock
-# 
+#     Copyright 2016 Josh Bullock and Birkbeck College University of London.
 # 
 #     Jwalk is available under Public Licence.
 #     This software is made available under GPL V3
@@ -18,7 +16,7 @@
 #     in modelling proteins with restraints from crosslinking mass spectrometry. 
 #     Molecular and Cellular Proteomics (15) pp.2491-2500
 #
-#===============================================================================
+# ===============================================================================
 
 from numpy import zeros
 from collections import OrderedDict
@@ -153,7 +151,7 @@ def mapGridPosition(densMap, atom):
     else:
         return 0
 
-def markCAlphas(densMap, prot, aa1, aa2):
+def mark_CAlphas(densMap, prot, aa1, aa2):
     """
     
     Returns ordered dictionaries containing {residue_number, chain, residue name : x, y, z}
@@ -347,7 +345,7 @@ def generate_solvent_accessible_surface(densMap,prot,aa1_CA, aa2_CA):
                 for z in range(-rad,rad+1):
                     if (x**2 + y**2 + z**2) <= (rad**2):
                         sphere[r].append([x,y,z])
-        
+    
     backbone = ['N','CA','C','O']                         
     
     # generate solvent accessible surface
@@ -409,7 +407,7 @@ def find_empty_space(res,sphere,densMap,CA):
                 starters.append([x_s+x,y_s+y,z_s+z])
     return starters
     
-def find_surface_voxels(aa1_CA, densMap, surface, xl_list = []):
+def find_surface_voxels(aa1_CA, densMap, xl_list = []):
         
     """
     
@@ -509,18 +507,10 @@ def find_surface_voxels(aa1_CA, densMap, surface, xl_list = []):
             aa_1_start_voxels[k] = find_empty_space(k,sphere3,densMap,aa1_CA)
         if aa_1_start_voxels[k] == []:
             aa_1_start_voxels[k] = find_empty_space(k,sphere4,densMap,aa1_CA)   
-        
-        if surface == False:
-            # if no voxels found after fourth shell then residue is not solvent exposed
-            if aa_1_start_voxels[k] == []:    
-                buried.append(k)
-                del aa_1_start_voxels[k]
-                k_buried +=1
-        else: # residues that have been determined solvent accessible by other means.
-            if aa_1_start_voxels[k] == []:
-                aa_1_start_voxels[k] = find_empty_space(k,sphere5,densMap,aa1_CA)
-            if aa_1_start_voxels[k] == []:
-                aa_1_start_voxels[k] = find_empty_space(k,sphere6,densMap,aa1_CA)
+        if aa_1_start_voxels[k] == []:
+            aa_1_start_voxels[k] = find_empty_space(k,sphere5,densMap,aa1_CA)
+        if aa_1_start_voxels[k] == []:
+            aa_1_start_voxels[k] = find_empty_space(k,sphere6,densMap,aa1_CA)
         
     rem_x = []
     
@@ -533,7 +523,7 @@ def find_surface_voxels(aa1_CA, densMap, surface, xl_list = []):
     
     return aa_1_start_voxels, rem_x
         
-def remove_duplicates(sasds,xl_list=False):
+def remove_duplicates(sasds):
     
     """
     
@@ -546,9 +536,6 @@ def remove_duplicates(sasds,xl_list=False):
            
     """ 
     
-    if xl_list == True:
-        return sasds
-        
     keep = {}
     keep_keys = []
     keep_sasds = {}
