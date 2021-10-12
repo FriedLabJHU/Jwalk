@@ -46,6 +46,7 @@ setup(
     package_dir = {'':'src'},
     requires=['NumPy (>=1.6)',
         "Biopython (>= 1.5)",
+        "wheel"
     ],
     package_data={'': ['naccess.config.txt']},
     scripts=['src/Jwalk/jwalk'],
